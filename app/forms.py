@@ -1,16 +1,8 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, \
-    TextAreaField
+from wtforms import StringField, BooleanField, SubmitField, FloatField
 from wtforms.validators import ValidationError, DataRequired, Length
 
 
-class LoginForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired()])
-    password = PasswordField('Password', validators=[DataRequired()])
-    remember_me = BooleanField('Remember Me')
-    submit = SubmitField('Sign In')
-
-
 class PostForm(FlaskForm):
-    post = StringField('Say something', validators=[DataRequired()])
+    post = StringField('Spatial Data', validators=[DataRequired()])
     submit = SubmitField('Search')
