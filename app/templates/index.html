@@ -12,30 +12,45 @@
     </div>
     <div id="rightmap" style="width: 80%; height: 500px;">
     <h1>Spatial Map</h1>
-    <div id="esri-map-container" style="height: 100%;"></div>
+    <div id="map" style="height: 100%;"></div>
     </div>
   </div>
 {% endblock %}
 
 {% block scripts %}
+<script type="text/javascript">
+  var theme = 'https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png';
+  
+  var latList = {{ lat_list }};
+  var lonList = {{ lon_list }};
 
-<script src="https://js.arcgis.com/3.31/"></script>
-<script>
-  require([
-    "esri/map",
-    "esri/layers/OpenStreetMapLayer",
-    "dojo/domReady!"
-  ], function (Map, OpenStreetMapLayer){
+  var lat = latList[0];
+  var lon = lonList[0];  
+  
+  var macarte = null;
+  var i = 0;
+  var markerClusters;
+  var popup = L.popup();
 
-    var map, openStreetMapLayer;
+  macarte = L.map('map').setView([lat, lon], 5);
+  markerClusters = L.markerClusterGroup;
+  L.tileLayer(theme, {
+      minZoom: 1,
+      maxZoom: 20
+  }).addTo(macarte);
+  var marker;
+  for(let i = 0 ; i < latList.length ; i++){
+    marker = L.marker([latList[i], lonList[i]]).addTo(macarte);
+  }
+  macarte.on('click', onMapClick);
 
-    map = new Map("esri-map-container", {
-      center: [-89.924, 30.036],
-      zoom: 12
-    });
-    openStreetMapLayer = new OpenStreetMapLayer();
-    map.addLayer(openStreetMapLayer);
-  });
+
+  function onMapClick(e) {
+    popup
+      .setLatLng(e.latlng)
+      .setContent("You clicked the map at " + e.latlng.toString())
+      .openOn(macarte);
+  }
 </script>
    
 {% endblock %}

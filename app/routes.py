@@ -17,14 +17,28 @@ def before_request():
 @app.route('/index', methods=['GET', 'POST'])
 def index():
     form = PostForm()
-    if form.validate_on_submit():
-        post = Post(body=form.post.data)
-        db.session.add(post)
-        db.session.commit()
-        flash('Your post is now live!')
-        return redirect(url_for('index'))
+    map_data = Post.query.order_by('id')
+    lat_list = []
+    lon_list = []
+    for each_data in map_data:
+        lat_list.append(each_data.lat)
+        lon_list.append(each_data.lon)
+
+    if form.validate_on_submit():        
+        flash('You can find the place on the map')
+        filter_data = form.select_tag.data
+        if filter_data == 'all':
+            map_data = Post.query.order_by('id')
+        else:
+            map_data = Post.query.filter_by(primary_tag=form.select_tag.data)
+        lat_list = []
+        lon_list = []
+        for each_data in map_data:
+            lat_list.append(each_data.lat)
+            lon_list.append(each_data.lon)
+        return render_template('index.html', title='Home', form=form, lat_list=lat_list, lon_list=lon_list)
     
-    return render_template('index.html', title='Home', form=form)
-    # return render_template('map.html')
+    return render_template('index.html', title='Home', form=form, lat_list=lat_list, lon_list=lon_list)
+
 
 
