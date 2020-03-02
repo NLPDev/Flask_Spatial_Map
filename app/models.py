@@ -8,5 +8,3 @@ class Post(db.Model):
     lon = db.Column(db.Float)
     lat = db.Column(db.Float)
 
-    # def __repr__(self):
-    #     return '<Post {}>'.format(self.body)

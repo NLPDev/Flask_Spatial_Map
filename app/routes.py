@@ -18,6 +18,7 @@ def before_request():
 def index():
     form = PostForm()
     map_data = Post.query.order_by('id')
+    filter_data = form.select_tag.data
     lat_list = []
     lon_list = []
     for each_data in map_data:
@@ -27,16 +28,15 @@ def index():
     if form.validate_on_submit():        
         flash('You can find the place on the map')
         filter_data = form.select_tag.data
-        if filter_data == 'all':
-            map_data = Post.query.order_by('id')
-        else:
+
+        if filter_data != 'all':
             map_data = Post.query.filter_by(primary_tag=form.select_tag.data)
+        
         lat_list = []
         lon_list = []
         for each_data in map_data:
             lat_list.append(each_data.lat)
             lon_list.append(each_data.lon)
-        return render_template('index.html', title='Home', form=form, lat_list=lat_list, lon_list=lon_list)
     
     return render_template('index.html', title='Home', form=form, lat_list=lat_list, lon_list=lon_list)
 
